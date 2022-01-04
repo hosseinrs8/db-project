@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { dbSetups } from './config/db-setup';
 import { CentralOfficeModule } from './central-office/central-office.module';
 import { EmployeeModule } from './employee/employee.module';
 import { TicketModule } from './ticket/ticket.module';
@@ -11,6 +13,7 @@ import { FactoryModule } from './factory/factory.module';
 
 @Module({
   imports: [
+    MikroOrmModule.forRoot(dbSetups),
     CentralOfficeModule,
     EmployeeModule,
     TicketModule,
