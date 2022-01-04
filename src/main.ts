@@ -12,7 +12,6 @@ async function bootstrap() {
   await generator.updateSchema();
 
   const config = new DocumentBuilder().setTitle('DB-server').build();
-
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
