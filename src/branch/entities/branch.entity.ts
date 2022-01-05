@@ -2,15 +2,14 @@ import {
   Collection,
   Entity,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
-import { CentralOffice } from '../../central-office/entities/central-office.entity';
 import { BranchPhone } from './branch-phone.entity';
 import { Invoice } from '../../invoice/entities/invoice.entity';
 import { Customer } from '../../customer/entities/customer.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
   tableName: 'branches',
@@ -31,18 +30,33 @@ export class Branch {
   @Property()
   city: string;
 
-  @ManyToOne(() => CentralOffice)
-  centralOffice: CentralOffice;
+  // @ApiProperty({
+  //   type: () => CentralOffice,
+  // })
+  // @ManyToOne(() => CentralOffice)
+  // centralOffice: CentralOffice;
 
+  @ApiProperty({
+    type: () => Customer,
+    isArray: true,
+  })
   @ManyToMany(() => Customer, (c) => c.shoppedBranches, {
     owner: true,
     nullable: true,
   })
   customers: Collection<Customer> = new Collection<Customer>(this);
 
+  @ApiProperty({
+    type: () => Invoice,
+    isArray: true,
+  })
   @OneToMany(() => Invoice, (i) => i.branch)
   invoices: Collection<Invoice> = new Collection<Invoice>(this);
 
+  @ApiProperty({
+    type: () => BranchPhone,
+    isArray: true,
+  })
   @OneToMany(() => BranchPhone, (bp) => bp.branch)
   phoneNumbers: Collection<BranchPhone> = new Collection<BranchPhone>(this);
 }

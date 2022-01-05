@@ -13,6 +13,17 @@ const dbSetups = {
   type: 'postgresql',
   autoLoadEntities: true,
   debug: false,
+  migrations: {
+    tableName: 'mikro_orm_migrations',
+    path: './migrations',
+    pattern: /^[\w-]+\d+\.ts$/,
+    transactional: true,
+    disableForeignKeys: true,
+    allOrNothing: true,
+    dropTables: true,
+    safe: false,
+    emit: 'ts',
+  },
 } as Options;
 
 async function initiate() {
