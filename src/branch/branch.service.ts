@@ -75,6 +75,7 @@ export class BranchService {
     return branchPhone;
   }
 
+  @UseRequestContext()
   async updatePhone(
     key: string,
     updateBranchPhoneDto: UpdateBranchPhoneDto,

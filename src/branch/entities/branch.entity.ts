@@ -34,7 +34,7 @@ export class Branch {
   //   type: () => CentralOffice,
   // })
   // @ManyToOne(() => CentralOffice)
-  // centralOffice: CentralOffice;
+  // centralOffice: CentralOffice; //fixme
 
   @ApiProperty({
     type: () => Customer,

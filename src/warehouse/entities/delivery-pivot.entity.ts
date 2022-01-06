@@ -1,6 +1,7 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { Branch } from '../../branch/entities/branch.entity';
 import { Warehouse } from './warehouse.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
   tableName: 'warehouse_branch_delivery_pivot',
@@ -9,9 +10,15 @@ export class DeliveryPivot {
   @Property({ primary: true })
   key: string;
 
+  @ApiProperty({
+    type: () => Branch,
+  })
   @ManyToOne(() => Branch)
   branch: Branch;
 
+  @ApiProperty({
+    type: () => Warehouse,
+  })
   @ManyToOne(() => Warehouse)
   warehouse: Warehouse;
 

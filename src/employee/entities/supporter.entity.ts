@@ -12,6 +12,7 @@ import { Ticket } from '../../ticket/entities/ticket.entity';
 import { Employee, Responsibility } from './employee.entity';
 import { CentralOffice } from '../../central-office/entities/central-office.entity';
 import { SupporterPhone } from './supporter-phone.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum Speciality {
   sell = 'sell',
@@ -47,15 +48,28 @@ export class Supporter {
   @Enum(() => Speciality)
   speciality: Speciality;
 
+  @ApiProperty({
+    type: () => Employee,
+  })
   @OneToOne(() => Employee, (e) => e.supporter, { owner: true })
   employee: Employee;
 
+  @ApiProperty({
+    type: () => Ticket,
+  })
   @OneToOne(() => Ticket, (t) => t.supporter, { owner: true })
   ticket: Ticket;
 
+  @ApiProperty({
+    type: () => CentralOffice,
+  })
   @ManyToOne(() => CentralOffice)
   centralOffice: CentralOffice;
 
+  @ApiProperty({
+    type: () => SupporterPhone,
+    isArray: true,
+  })
   @OneToMany(() => SupporterPhone, (sp) => sp.supporter)
   phoneNumbers: Collection<SupporterPhone> = new Collection<SupporterPhone>(
     this,

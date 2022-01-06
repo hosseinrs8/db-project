@@ -1,5 +1,6 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { Ticket } from './ticket.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
   tableName: 'ticket-attachments',
@@ -8,6 +9,9 @@ export class Attachment {
   @Property({ primary: true })
   key: string;
 
+  @ApiProperty({
+    type: () => Ticket,
+  })
   @ManyToOne(() => Ticket)
   ticket: Ticket;
 

@@ -10,6 +10,7 @@ import {
 import { Branch } from '../../branch/entities/branch.entity';
 import { Customer } from '../../customer/entities/customer.entity';
 import { Product } from '../../product/entities/product.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum PaymentStatus {
   pending = 'pending',
@@ -27,6 +28,9 @@ export class Invoice {
   @Property()
   price: number;
 
+  @ApiProperty({
+    type: () => Customer,
+  })
   @ManyToOne(() => Customer)
   customer: Customer;
 
@@ -45,9 +49,16 @@ export class Invoice {
   @Property()
   city: string;
 
+  @ApiProperty({
+    type: () => Branch,
+  })
   @ManyToOne(() => Branch)
   branch: Branch;
 
+  @ApiProperty({
+    type: () => Product,
+    isArray: true,
+  })
   @OneToMany(() => Product, (p) => p.invoice)
   products: Collection<Product> = new Collection<Product>(this);
 }

@@ -1,5 +1,6 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { Warehouse } from './warehouse.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class StockProducts {
@@ -12,6 +13,9 @@ export class StockProducts {
   @Property()
   availableProductCount: number;
 
+  @ApiProperty({
+    type: () => Warehouse,
+  })
   @ManyToOne(() => Warehouse)
   warehouse: Warehouse;
 

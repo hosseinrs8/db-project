@@ -59,9 +59,9 @@ export class BranchController {
     return this.branchService.createPhone(+branchId, createBranchPhoneDto);
   }
 
-  @Patch(':phoneKey')
+  @Patch('phone/key')
   updatePhone(
-    @Param('phoneKey') key: string,
+    @Param('key') key: string,
     @Body() updateBranchPhoneDto: UpdateBranchPhoneDto,
   ): Promise<BranchPhone> {
     return this.branchService.updatePhone(key, updateBranchPhoneDto);
@@ -72,26 +72,26 @@ export class BranchController {
     return this.branchService.findAllPhones(+branchId);
   }
 
-  @Get(':phoneKey')
-  findOnePhone(@Param('phoneKey') key: string): Promise<BranchPhone> {
+  @Get('phone/key')
+  findOnePhone(@Param('key') key: string): Promise<BranchPhone> {
     return this.branchService.findOnePhone(key);
   }
 
-  @Delete(':phoneKey')
-  removePhone(@Param('phoneKey') key: string) {
+  @Delete('phone/key')
+  removePhone(@Param('key') key: string) {
     return this.branchService.removePhone(key);
   }
 
   @Post(':id/order')
   createOrder(
     @Param('id') branchId: string,
-    createOrderDto: CreateOrderDto,
+    @Body() createOrderDto: CreateOrderDto,
   ): Promise<OrderPivot> {
     return this.branchService.createOrder(+branchId, createOrderDto);
   }
 
-  @Get('orderKey')
-  findOneOrder(@Param('orderKey') key: string): Promise<OrderPivot> {
+  @Get('order/:key')
+  findOneOrder(@Param('key') key: string): Promise<OrderPivot> {
     return this.branchService.findOneOrder(key);
   }
 
