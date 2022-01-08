@@ -7,7 +7,7 @@ import { Oven } from './entities/oven.entity';
 import { Microwave } from './entities/microwave.entity';
 import { Refrigerator } from './entities/refrigerator.entity';
 import { Tv } from './entities/tv.entity';
-import { VacuumCleaner } from './entities/vaccum-cleaner.entity';
+import { VacuumCleaner } from './entities/vacuum-cleaner.entity';
 import { WashingMachine } from './entities/washing-machine.entity';
 
 @Module({

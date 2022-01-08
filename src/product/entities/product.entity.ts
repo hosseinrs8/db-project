@@ -28,10 +28,10 @@ export class Product {
   @Property()
   price: number;
 
-  @Property()
+  @Property({ onCreate: (p: Product) => (p.dateManufactured = new Date()) })
   dateManufactured: Date;
 
-  @ManyToOne(() => Invoice)
+  @ManyToOne(() => Invoice, { nullable: true })
   invoice: Invoice;
 
   @ManyToOne(() => Warehouse)
