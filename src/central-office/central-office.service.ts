@@ -9,6 +9,7 @@ import { UpdateGeneralManagerDto } from './dto/update-general-manager.dto';
 import { GeneralManager } from './entities/general-manager.entity';
 import { GeneralManagerPhone } from './entities/general-manager-phone.entity';
 import { CentralOfficePhone } from './entities/central-office-phone.entity';
+import { MikroORM } from '@mikro-orm/core';
 
 @Injectable()
 export class CentralOfficeService {
@@ -21,6 +22,7 @@ export class CentralOfficeService {
     private readonly centralOfficePhoneRepository: EntityRepository<CentralOfficePhone>,
     @InjectRepository(GeneralManagerPhone)
     private readonly generalManagerPhoneRepository: EntityRepository<GeneralManagerPhone>,
+    private readonly orm: MikroORM,
   ) {}
   async onModuleInit(): Promise<void> {
     //todo seed centralOffice, generalManager
