@@ -6,7 +6,9 @@ import { CreateVacuumDto } from './dto/create-vacuum.dto';
 import { CreateWashingMachineDto } from './dto/create-washing-machine.dto';
 import { CreateRefrigeratorDto } from './dto/create-refrigerator.dto';
 import { CreateTvDto } from './dto/create-tv.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Product')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
