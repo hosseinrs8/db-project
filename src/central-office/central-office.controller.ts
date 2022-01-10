@@ -1,15 +1,62 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { CentralOfficeService } from './central-office.service';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateCentralOfficeDto } from './dto/update-central-office.dto';
+import { CreatePhoneDto } from './dto/create-phone.dto';
+import { UpdatePhoneDto } from './dto/update-phone.dto';
+import { UpdateGeneralManagerDto } from './dto/update-general-manager.dto';
 
 @ApiTags('Central Office')
 @Controller('central-office')
 export class CentralOfficeController {
   constructor(private readonly centralOfficeService: CentralOfficeService) {}
 
-  //todo add update for central-office and generalManager
-  //todo add create, update, delete for phone
   //todo set return types
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateCentralOfficeDto: UpdateCentralOfficeDto,
+  ) {
+    return this.centralOfficeService.update(+id, updateCentralOfficeDto);
+  }
+
+  @Patch('manager/:id')
+  updateManager(
+    @Param('id') id: string,
+    @Body() updateGeneralManagerDto: UpdateGeneralManagerDto,
+  ) {
+    return this.centralOfficeService.updateManager(
+      +id,
+      updateGeneralManagerDto,
+    );
+  }
+
+  @Post('phone')
+  createPhone(@Body() createPhoneDto: CreatePhoneDto) {
+    return this.centralOfficeService.createPhone(createPhoneDto);
+  }
+
+  @Patch('phone/:key')
+  updatePhone(
+    @Param('key') key: string,
+    @Body() updatePhoneDto: UpdatePhoneDto,
+  ) {
+    return this.centralOfficeService.updatePhone(key, updatePhoneDto);
+  }
+
+  @Delete('phone/:key')
+  removePhone(@Param('key') key: string) {
+    return this.centralOfficeService.removePhone(key);
+  }
 
   @Get()
   find() {
