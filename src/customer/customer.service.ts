@@ -20,55 +20,83 @@ export class CustomerService {
   ) {}
 
   @UseRequestContext()
-  create(createCustomerDto: CreateCustomerDto) {
-    //todo
+  create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
+    const c = this.orm.em.getConnection();
+    return c.execute(
+      `INSERT INTO customers (name) VALUES ('${createCustomerDto.name}')`,
+    );
   }
 
   @UseRequestContext()
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    //todo
+  async update(
+    id: number,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
+    const c = this.orm.em.getConnection();
+    return c.execute(
+      `UPDATE customers SET name = '${updateCustomerDto.name}' WHERE ID = '${id}'`,
+    );
   }
 
   @UseRequestContext()
-  findOne(id: number) {
-    //todo
+  findOne(id: number): Promise<Customer> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM customers WHERE ID = '${id}'`);
   }
 
   @UseRequestContext()
-  findAll() {
-    //todo
+  findAll(): Promise<Array<Customer>> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM customers`);
   }
 
   @UseRequestContext()
-  remove(id: number) {
-    //todo
+  remove(id: number): Promise<Customer> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`DELETE FROM customers WHERE ID = '${id}'`);
   }
 
   @UseRequestContext()
-  createPhone(
+  async createPhone(
     customerId: number,
     createCustomerPhoneDto: CreateCustomerPhoneDto,
-  ) {
-    //todo
+  ): Promise<CustomerPhone> {
+    const customer = await this.customerRepository.findOne({ id: customerId }, [
+      'phoneNumbers',
+    ]);
+    const phone = new CustomerPhone(customer, createCustomerPhoneDto.number);
+    const qb = this.customerPhoneRepository.createQueryBuilder();
+    await qb.insert(phone).execute('get');
+    return phone;
   }
 
   @UseRequestContext()
-  updatePhone(key: string, updateCustomerPhoneDto: UpdateCustomerPhoneDto) {
-    //todo
+  async updatePhone(
+    key: string,
+    updateCustomerPhoneDto: UpdateCustomerPhoneDto,
+  ): Promise<CustomerPhone> {
+    const qb = this.customerPhoneRepository.createQueryBuilder();
+    const phone = await this.findOnePhone(key);
+    phone.number = updateCustomerPhoneDto.number || phone.number;
+    await qb.update(phone).execute('get');
+    return phone;
   }
 
   @UseRequestContext()
-  findAllPhones(customerId) {
-    //todo
+  findAllPhones(customerId: number): Promise<Array<CustomerPhone>> {
+    const qb = this.customerPhoneRepository.createQueryBuilder();
+    return qb.select('*').where({ customer: customerId }).execute('all');
   }
 
   @UseRequestContext()
-  findOnePhone(key: string) {
-    //todo
+  findOnePhone(key: string): Promise<CustomerPhone> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM customer_phones WHERE KEY = '${key}'`);
   }
 
   @UseRequestContext()
-  removePhone(key: string) {
-    //todo
+  removePhone(key: string): Promise<CustomerPhone> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`DELETE FROM customer_phones WHERE KEY = '${key}'`);
   }
 }

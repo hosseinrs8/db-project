@@ -70,7 +70,7 @@ export class CustomerController {
 
   @Get(':id/phone')
   findAllPhones(@Param('id') customerId: string) {
-    return this.customerService.findAllPhones(customerId);
+    return this.customerService.findAllPhones(+customerId);
   }
 
   @Get('phone/:key')
