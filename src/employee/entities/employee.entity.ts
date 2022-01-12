@@ -53,7 +53,7 @@ export class Employee {
   @ApiProperty({
     type: () => CentralOffice,
   })
-  @ManyToOne(() => CentralOffice)
+  @ManyToOne(() => CentralOffice, { nullable: true }) //todo remove nullable
   centralOffice: CentralOffice;
 
   @ApiProperty({

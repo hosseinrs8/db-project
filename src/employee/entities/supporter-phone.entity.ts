@@ -3,7 +3,7 @@ import { Supporter } from './supporter.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
-  tableName: 'supporter-phones',
+  tableName: 'supporter_phones',
 })
 export class SupporterPhone {
   @Property({ primary: true })
