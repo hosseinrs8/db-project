@@ -24,51 +24,66 @@ export class BranchService {
     private readonly orm: MikroORM,
   ) {}
 
+  // @UseRequestContext()
+  // async create(createBranchDto: CreateBranchDto): Promise<Branch> {
+  //   const branch = new Branch();
+  //   branch.city = createBranchDto.city;
+  //   branch.address = createBranchDto.address;
+  //   branch.manager = createBranchDto.manager;
+  //   // branch.centralOffice = new CentralOffice(); //fixme
+  //   branch.monthlyBudget = createBranchDto.monthlyBudget;
+  //   await this.branchRepository.persistAndFlush(branch);
+  //   return branch;
+  // }
   @UseRequestContext()
-  async create(createBranchDto: CreateBranchDto): Promise<Branch> {
-    const branch = new Branch();
-    branch.city = createBranchDto.city;
-    branch.address = createBranchDto.address;
-    branch.manager = createBranchDto.manager;
-    // branch.centralOffice = new CentralOffice(); //fixme
-    branch.monthlyBudget = createBranchDto.monthlyBudget;
-    await this.branchRepository.persistAndFlush(branch);
-    return branch;
+  create(createBranchDto: CreateBranchDto): Promise<Branch> {
+    const c = this.orm.em.getConnection();
+    return c.execute(
+        `INSERT INTO branches (city, address, monthly_budget, manager) VALUES ('${createBranchDto.city}', '${createBranchDto.address}', ${createBranchDto.monthlyBudget}, '${createBranchDto.manager}')`,
+    );
   }
 
+  // @UseRequestContext()
+  // async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
+  //   const branch = await this.findOne(id);
+  //   branch.city = updateBranchDto.city || branch.city;
+  //   branch.address = updateBranchDto.address || branch.address;
+  //   branch.manager = updateBranchDto.manager || branch.manager;
+  //   branch.monthlyBudget =
+  //     updateBranchDto.monthlyBudget || branch.monthlyBudget;
+  //   await this.branchRepository.persistAndFlush(branch);
+  //   return branch;
+  // }
+
   @UseRequestContext()
-  async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
-    const branch = await this.findOne(id);
-    branch.city = updateBranchDto.city || branch.city;
-    branch.address = updateBranchDto.address || branch.address;
-    branch.manager = updateBranchDto.manager || branch.manager;
-    branch.monthlyBudget =
-      updateBranchDto.monthlyBudget || branch.monthlyBudget;
-    await this.branchRepository.persistAndFlush(branch);
-    return branch;
+  update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`UPDATE branches SET city = '${updateBranchDto.city}', address = '${updateBranchDto.address}', monthly_budget = ${updateBranchDto.monthlyBudget}, manager = '${updateBranchDto.manager}'`);
   }
 
   @UseRequestContext()
   findAll(): Promise<Array<Branch>> {
-    return this.branchRepository.findAll();
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM branches`);
   }
 
   @UseRequestContext()
   findOne(id: number): Promise<Branch> {
-    return this.branchRepository.findOne({ id });
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM branches WHERE ID = ${ id }`);
   }
 
   @UseRequestContext()
-  async remove(id: number) {
-    const branch = await this.findOne(id);
-    return this.branchRepository.removeAndFlush(branch);
+  remove(id: number): Promise<Branch> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`DELETE FROM branches WHERE ID = ${ id }`);
   }
 
   @UseRequestContext()
   async createPhone(
     branchId: number,
     createBranchPhoneDto: CreateBranchPhoneDto,
-  ) {
+  ): Promise<BranchPhone> {
     const branch = await this.findOne(branchId);
     const branchPhone = new BranchPhone(branch, createBranchPhoneDto.number);
     await this.branchPhoneRepository.persistAndFlush(branchPhone);
@@ -88,18 +103,20 @@ export class BranchService {
 
   @UseRequestContext()
   findAllPhones(branchId: number): Promise<Array<BranchPhone>> {
-    return this.branchPhoneRepository.find({ branch: branchId });
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM branche_phones`);
   }
 
   @UseRequestContext()
   findOnePhone(key: string): Promise<BranchPhone> {
-    return this.branchPhoneRepository.findOne({ key });
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM branche_phones WHERE KEY = '${ key }'`);
   }
 
   @UseRequestContext()
-  async removePhone(key: string) {
-    const branchPhone = await this.findOnePhone(key);
-    return this.branchPhoneRepository.removeAndFlush(branchPhone);
+  removePhone(key: string): Promise<BranchPhone> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`DELETE FROM branche_phones WHERE KEY = ${ key }`);
   }
 
   @UseRequestContext()
@@ -122,11 +139,13 @@ export class BranchService {
 
   @UseRequestContext()
   findAllOrders(branchId: number): Promise<Array<OrderPivot>> {
-    return this.orderPivotRepository.find({ branch: branchId });
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM branch_warehouse_order_pivot`);
   }
 
   @UseRequestContext()
   findOneOrder(key: string): Promise<OrderPivot> {
-    return this.orderPivotRepository.findOne({ key });
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM branch_warehouse_order_pivot WHERE KEY = '${ key }'`);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MikroORM } from '@mikro-orm/core';
 import { InjectRepository, UseRequestContext } from '@mikro-orm/nestjs';
-import { Branch } from '../branch/entities/branch.entity'
+// import { Branch } from '../branch/entities/branch.entity';
 import { Warehouse } from './entities/warehouse.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { WarehousePhone } from './entities/warehouse-phone.entity';
@@ -18,8 +18,8 @@ import { CreateOrderDto } from '../branch/dto/create-order.dto';
 @Injectable()
 export class WarehouseService {
   constructor(
-    @InjectRepository(Branch) //todo add
-    private readonly branchRepository: EntityRepository<Branch>,
+    // @InjectRepository(Branch) //todo add
+    // private readonly branchRepository: EntityRepository<Branch>,
     @InjectRepository(Warehouse)
     private readonly warehouseRepository: EntityRepository<Warehouse>,
     @InjectRepository(WarehousePhone)
@@ -137,12 +137,12 @@ export class WarehouseService {
 
   @UseRequestContext()
   async createDelivery(warehouseId: number, createDeliveryDto: CreateOrderDto): Promise<DeliveryPivot> {
-    const warehouse = await this.warehouseRepository.findOne({id: warehouseId}, ['deliveries']); //todo: there is not exist
-    const branch = await this.branchRepository.findOne( {} ) // todo ???
-    const delivery = new DeliveryPivot(warehouse, branch, createDeliveryDto.typeOfProduct, createDeliveryDto.numberOfProduct, createDeliveryDto.deliveryDate);
-    const qb = this.deliveryPlotRepository.createQueryBuilder();
-    await qb.insert(delivery).execute('get');
-    return delivery;
+    // const warehouse = await this.warehouseRepository.findOne({id: warehouseId}, ['deliveries']); //todo: there is not exist
+    // const branch = await this.branchRepository.findOne( {} ) // todo ???
+    // const delivery = new DeliveryPivot(warehouse, branch, createDeliveryDto.typeOfProduct, createDeliveryDto.numberOfProduct, createDeliveryDto.deliveryDate);
+    // const qb = this.deliveryPlotRepository.createQueryBuilder();
+    // await qb.insert(delivery).execute('get');
+    return null;
   }
 
   @UseRequestContext()

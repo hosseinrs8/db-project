@@ -10,7 +10,7 @@ import {
 import { CentralOfficeService } from './central-office.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateCentralOfficeDto } from './dto/update-central-office.dto';
-import { CreatePhoneDto } from './dto/create-phone.dto';
+import { CreatePhoneDto, PhoneOwners } from './dto/create-phone.dto';
 import { UpdatePhoneDto } from './dto/update-phone.dto';
 import { UpdateGeneralManagerDto } from './dto/update-general-manager.dto';
 
@@ -45,17 +45,21 @@ export class CentralOfficeController {
     return this.centralOfficeService.createPhone(createPhoneDto);
   }
 
-  @Patch('phone/:key')
+  @Patch('phone/:key/:owner') //todo add '/:owner
   updatePhone(
     @Param('key') key: string,
+    @Param('owner') owner: PhoneOwners, //todo add
     @Body() updatePhoneDto: UpdatePhoneDto,
   ) {
-    return this.centralOfficeService.updatePhone(key, updatePhoneDto);
+    return this.centralOfficeService.updatePhone(key, owner, updatePhoneDto); //todo add owner
   }
 
-  @Delete('phone/:key')
-  removePhone(@Param('key') key: string) {
-    return this.centralOfficeService.removePhone(key);
+  @Delete('phone/:key/:owner') //todo add '/:owner
+  removePhone(
+      @Param('key') key: string,
+      @Param('owner') owner: PhoneOwners, //todo add
+  ) {
+    return this.centralOfficeService.removePhone(key, owner); //todo add owner
   }
 
   @Get()
