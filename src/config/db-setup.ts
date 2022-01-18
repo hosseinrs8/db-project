@@ -5,8 +5,8 @@ let orm;
 const dbSetups = {
   host: '127.0.0.1',
   port: 5432,
-  user: 'psuser',
-  password: '8001',
+  user: 'postgres',
+  password: '9173',
   database: 'postgres',
   schema: 'public',
   dbName: 'postgres',

@@ -102,6 +102,11 @@ export class WarehouseController {
     return this.warehouseService.updateStockProduct(key, updateStockProductDto);
   }
 
+  @Get('stock-products/key') //todo add
+  findOneStock(@Param('key') key: string) {
+    return this.warehouseService.findOneStockProducts(key);
+  }
+
   @Get(':id/stock-products')
   findAllStockProducts(@Param('id') id: string) {
     return this.warehouseService.findAllStockProducts(+id);

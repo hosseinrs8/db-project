@@ -15,16 +15,21 @@ export class InvoiceService {
 
   @UseRequestContext()
   create(createInvoiceDto: CreateInvoiceDto) {
-    //todo
+    const c = this.orm.em.getConnection();
+    return c.execute(
+        `INSERT INTO invoices (price, customer_id, address, city, branch_id, product_ids) VALUES (${createInvoiceDto.price}, ${createInvoiceDto.customerId}, '${createInvoiceDto.address}', '${createInvoiceDto.city}', ${createInvoiceDto.branchId}, ${createInvoiceDto.productIds})`,
+    );
   }
 
   @UseRequestContext()
-  findAll() {
-    //todo
+  findAll(): Promise<Array<Invoice>> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM invoices`);
   }
 
   @UseRequestContext()
-  findOne(id: number) {
-    //todo
+  findOne(id: number): Promise<Invoice> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM invoices WHERE ID = ${ id }`);
   }
 }

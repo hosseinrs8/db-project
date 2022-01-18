@@ -25,9 +25,9 @@ export class FactoryController {
     return this.factoryService.update(+id, updateFactoryDto);
   }
 
-  @Post('phone')
-  createPhone(@Body() createFactoryPhoneDto: CreateFactoryPhoneDto) {
-    return this.factoryService.createPhone(createFactoryPhoneDto);
+  @Post(':id/phone') //todo 'phone' to ':id/phone'
+  createPhone(@Param('id') ownerId: string, @Body() createFactoryPhoneDto: CreateFactoryPhoneDto) { //todo add '@Param('id') ownerId: string, '
+    return this.factoryService.createPhone(+ownerId, createFactoryPhoneDto); //todo add '+ownerId, '
   }
 
   @Patch('phone/:key')

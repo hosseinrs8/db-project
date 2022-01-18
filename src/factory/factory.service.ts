@@ -22,29 +22,54 @@ export class FactoryService {
     //todo seed factory
   }
 
-  update(id: number, updateFactoryDto: UpdateFactoryDto) {
-    //todo
+  update(id: number, updateFactoryDto: UpdateFactoryDto): Promise<Factory> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`UPDATE factory SET ceo = '${updateFactoryDto.ceo}', address = '${updateFactoryDto.address}' WHERE ID = ${id}`);
   }
 
-  createPhone(createFactoryPhoneDto: CreateFactoryPhoneDto) {
-    //todo
+  async createPhone(ownerId: number, createFactoryPhoneDto: CreateFactoryPhoneDto): Promise<FactoryPhone> { //todo: I add ownerId to arguments
+    const factory = await this.factoryRepository.findOne(
+          { id: ownerId},
+          ['phoneNumbers'],
+      );
+      const phone = new FactoryPhone(
+          factory,
+          createFactoryPhoneDto.number,
+      );
+      const qb = this.factoryPhoneRepository.createQueryBuilder();
+      await qb.insert(phone).execute('get');
+      return phone;
+    }
+
+  async updatePhone(key: string, updateFactoryPhone: UpdateFactoryPhoneDto): Promise<FactoryPhone> {
+    const qb = this.factoryPhoneRepository.createQueryBuilder();
+    const phone = await this.findOnePhone(key);
+    phone.number = updateFactoryPhone.number || phone.number;
+    await qb.update(phone).execute('get');
+    return phone;
   }
 
-  updatePhone(key: string, updateFactoryPhone: UpdateFactoryPhoneDto) {
-    //todo
-  }
-
-  removePhone(key: string) {
-    //todo
+  removePhone(key: string): Promise<FactoryPhone> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`DELETE FROM factory_phones WHERE KEY = '${ key }'`);
   }
 
   @UseRequestContext()
-  find() {
-    //todo
+  find(): Promise<Array<Factory>> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM factory`);
+  }
+
+
+  @UseRequestContext()
+  findOnePhone(key: string): Promise<FactoryPhone> { //todo: I add this scope
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM factory_phones WHERE KEY = '${key}'`);
   }
 
   @UseRequestContext()
-  findPhones() {
-    //todo
+  findPhones(): Promise<Array<FactoryPhone>> {
+    const c = this.orm.em.getConnection();
+    return c.execute(`SELECT * FROM factory_phones`);
   }
 }

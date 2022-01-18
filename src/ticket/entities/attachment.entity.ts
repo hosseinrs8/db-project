@@ -3,7 +3,7 @@ import { Ticket } from './ticket.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
-  tableName: 'ticket-attachments',
+  tableName: 'ticket_attachments',
 })
 export class Attachment {
   @Property({ primary: true })
