@@ -27,77 +27,114 @@ export class CentralOfficeService {
     private readonly orm: MikroORM,
   ) {}
   async onModuleInit(): Promise<void> {
-    //todo seed centralOffice, generalManager
+    if ((await this.find()).length < 1) {
+      const co = new CentralOffice();
+      co.address = 'Tehran';
+      co.yearlyIncome = 1000;
+      this.centralOfficeRepository.persist(co);
+      const manager = new GeneralManager(co, 123);
+      manager.name = 'name';
+      manager.hourlySalary = 100;
+      await this.generalManagerRepository.persistAndFlush(manager);
+      co.generalManager = manager;
+      await this.centralOfficeRepository.persistAndFlush(co);
+    }
   }
 
   @UseRequestContext()
-  update(id: number, updateCentralOfficeDto: UpdateCentralOfficeDto): Promise<CentralOffice> {
+  update(
+    id: number,
+    updateCentralOfficeDto: UpdateCentralOfficeDto,
+  ): Promise<CentralOffice> {
     const c = this.orm.em.getConnection();
-    return c.execute(`UPDATE central_office SET address = '${updateCentralOfficeDto.address}', yearly_income = '${updateCentralOfficeDto.yearlyIncome}' WHERE ID = ${ id }`);
+    return c.execute(
+      `UPDATE central_office SET address = '${updateCentralOfficeDto.address}', yearly_income = '${updateCentralOfficeDto.yearlyIncome}' WHERE ID = ${id}`,
+    );
   }
 
   @UseRequestContext()
-  updateManager(id: number, updateGeneralManagerDro: UpdateGeneralManagerDto): Promise<GeneralManager> {
+  updateManager(
+    id: number,
+    updateGeneralManagerDro: UpdateGeneralManagerDto,
+  ): Promise<GeneralManager> {
     const c = this.orm.em.getConnection();
-    return c.execute(`UPDATE general_manager SET number = '${updateGeneralManagerDro.number}', hours_worked = ${updateGeneralManagerDro.hoursWorked}, name = '${updateGeneralManagerDro.name}', hourly_salary = ${updateGeneralManagerDro.hourlySalary} WHERE ID = ${ id }`);
+    return c.execute(
+      `UPDATE general_manager SET number = '${updateGeneralManagerDro.number}', hours_worked = ${updateGeneralManagerDro.hoursWorked}, name = '${updateGeneralManagerDro.name}', hourly_salary = ${updateGeneralManagerDro.hourlySalary} WHERE ID = ${id}`,
+    );
   }
 
   @UseRequestContext()
   createPhone(createPhoneDto: CreatePhoneDto): Promise<CentralOfficePhone> {
     const c = this.orm.em.getConnection();
     if (createPhoneDto.owner === PhoneOwners.centralOffice) {
-      return c.execute(`INSERT INTO central_office_phones (owner, number) VALUES (${createPhoneDto.owner}, '${createPhoneDto.number}')`);
+      return c.execute(
+        `INSERT INTO central_office_phones (owner, number) VALUES (${createPhoneDto.owner}, '${createPhoneDto.number}')`,
+      );
     } else if (createPhoneDto.owner === PhoneOwners.generalManager) {
-      return c.execute(`INSERT INTO general_manager_phones (owner, number) VALUES (${createPhoneDto.owner}, '${createPhoneDto.number}')`);
+      return c.execute(
+        `INSERT INTO general_manager_phones (owner, number) VALUES (${createPhoneDto.owner}, '${createPhoneDto.number}')`,
+      );
     } else {
       throw BadRequestException;
     }
   }
 
   @UseRequestContext()
-  updatePhone(key: string, owner: PhoneOwners, updatePhoneDto: UpdatePhoneDto): Promise<Phone> { //todo add owner
+  updatePhone(
+    key: string,
+    owner: PhoneOwners,
+    updatePhoneDto: UpdatePhoneDto,
+  ): Promise<Phone> {
     const c = this.orm.em.getConnection();
     if (owner === PhoneOwners.centralOffice) {
-      return c.execute(`UPDATE central_office_phones SET number = '${updatePhoneDto.number}' WHERE KEY = '${ key }'`);
+      return c.execute(
+        `UPDATE central_office_phones SET number = '${updatePhoneDto.number}' WHERE KEY = '${key}'`,
+      );
     } else if (owner === PhoneOwners.generalManager) {
-      return c.execute(`UPDATE general_manager_phones SET number = '${updatePhoneDto.number}' WHERE KEY = '${ key }'`);
+      return c.execute(
+        `UPDATE general_manager_phones SET number = '${updatePhoneDto.number}' WHERE KEY = '${key}'`,
+      );
     } else {
       throw BadRequestException;
     }
   }
 
   @UseRequestContext()
-  removePhone(key: string, owner: PhoneOwners): Promise<Phone> { //todo add owner
+  removePhone(key: string, owner: PhoneOwners): Promise<Phone> {
     const c = this.orm.em.getConnection();
     if (owner === PhoneOwners.centralOffice) {
-      return c.execute(`DELETE FROM central_office_phones WHERE KEY = '${ key }'`);
+      return c.execute(
+        `DELETE FROM central_office_phones WHERE KEY = '${key}'`,
+      );
     } else if (owner === PhoneOwners.generalManager) {
-      return c.execute(`DELETE FROM general_manager_phones  WHERE KEY = '${ key }'`);
+      return c.execute(
+        `DELETE FROM general_manager_phones  WHERE KEY = '${key}'`,
+      );
     } else {
       throw BadRequestException;
     }
   }
 
   @UseRequestContext()
-  find(): Promise<Array<CentralOffice>> {  //todo: it has no 'ID', in update() there is 'ID'
+  find(): Promise<Array<CentralOffice>> {
     const c = this.orm.em.getConnection();
     return c.execute(`SELECT * FROM central_office`);
   }
 
   @UseRequestContext()
-  findManager(): Promise<Array<GeneralManager>> {  //todo: it has no 'ID', in update() there is 'ID'
+  findManager(): Promise<Array<GeneralManager>> {
     const c = this.orm.em.getConnection();
     return c.execute(`SELECT * FROM general_manager`);
   }
 
   @UseRequestContext()
-  findPhones(): Promise<Array<CentralOfficePhone>> { //todo return array
+  findPhones(): Promise<Array<CentralOfficePhone>> {
     const c = this.orm.em.getConnection();
     return c.execute(`SELECT * FROM central_office_phones`);
   }
 
   @UseRequestContext()
-  findManagerPhones(): Promise<Array<GeneralManagerPhone>> { //todo return array
+  findManagerPhones(): Promise<Array<GeneralManagerPhone>> {
     const c = this.orm.em.getConnection();
     return c.execute(`SELECT * FROM general_manager_phones`);
   }

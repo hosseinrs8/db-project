@@ -19,29 +19,38 @@ export class FactoryService {
   ) {}
 
   async onModuleInit(): Promise<void> {
-    //todo seed factory
+    if ((await this.find()).length < 1) {
+      const c = this.orm.em.getConnection();
+      c.execute(
+        `INSERT INTO factory (ceo, address) VALUES ('manager', 'Tehran')`,
+      );
+    }
   }
 
   update(id: number, updateFactoryDto: UpdateFactoryDto): Promise<Factory> {
     const c = this.orm.em.getConnection();
-    return c.execute(`UPDATE factory SET ceo = '${updateFactoryDto.ceo}', address = '${updateFactoryDto.address}' WHERE ID = ${id}`);
+    return c.execute(
+      `UPDATE factory SET ceo = '${updateFactoryDto.ceo}', address = '${updateFactoryDto.address}' WHERE ID = ${id}`,
+    );
   }
 
-  async createPhone(ownerId: number, createFactoryPhoneDto: CreateFactoryPhoneDto): Promise<FactoryPhone> { //todo: I add ownerId to arguments
-    const factory = await this.factoryRepository.findOne(
-          { id: ownerId},
-          ['phoneNumbers'],
-      );
-      const phone = new FactoryPhone(
-          factory,
-          createFactoryPhoneDto.number,
-      );
-      const qb = this.factoryPhoneRepository.createQueryBuilder();
-      await qb.insert(phone).execute('get');
-      return phone;
-    }
+  async createPhone(
+    ownerId: number,
+    createFactoryPhoneDto: CreateFactoryPhoneDto,
+  ): Promise<FactoryPhone> {
+    const factory = await this.factoryRepository.findOne({ id: ownerId }, [
+      'phoneNumbers',
+    ]);
+    const phone = new FactoryPhone(factory, createFactoryPhoneDto.number);
+    const qb = this.factoryPhoneRepository.createQueryBuilder();
+    await qb.insert(phone).execute('get');
+    return phone;
+  }
 
-  async updatePhone(key: string, updateFactoryPhone: UpdateFactoryPhoneDto): Promise<FactoryPhone> {
+  async updatePhone(
+    key: string,
+    updateFactoryPhone: UpdateFactoryPhoneDto,
+  ): Promise<FactoryPhone> {
     const qb = this.factoryPhoneRepository.createQueryBuilder();
     const phone = await this.findOnePhone(key);
     phone.number = updateFactoryPhone.number || phone.number;
@@ -51,7 +60,7 @@ export class FactoryService {
 
   removePhone(key: string): Promise<FactoryPhone> {
     const c = this.orm.em.getConnection();
-    return c.execute(`DELETE FROM factory_phones WHERE KEY = '${ key }'`);
+    return c.execute(`DELETE FROM factory_phones WHERE KEY = '${key}'`);
   }
 
   @UseRequestContext()
@@ -60,9 +69,8 @@ export class FactoryService {
     return c.execute(`SELECT * FROM factory`);
   }
 
-
   @UseRequestContext()
-  findOnePhone(key: string): Promise<FactoryPhone> { //todo: I add this scope
+  findOnePhone(key: string): Promise<FactoryPhone> {
     const c = this.orm.em.getConnection();
     return c.execute(`SELECT * FROM factory_phones WHERE KEY = '${key}'`);
   }

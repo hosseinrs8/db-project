@@ -14,12 +14,12 @@ export class GeneralManager {
   key: string;
 
   @Property()
-  idNumber: string;
+  idNumber: number;
 
   @OneToOne(() => CentralOffice, (co) => co.generalManager)
   centralOffice: CentralOffice;
 
-  @Property()
+  @Property({ nullable: true })
   hoursWorked: number;
 
   @Property()
@@ -28,12 +28,14 @@ export class GeneralManager {
   @Property()
   hourlySalary: number;
 
-  @OneToMany(() => GeneralManagerPhone, (g) => g.generalManager)
+  @OneToMany(() => GeneralManagerPhone, (g) => g.generalManager, {
+    nullable: true,
+  })
   phoneNumbers: Collection<GeneralManagerPhone> = new Collection<GeneralManagerPhone>(
     this,
   );
 
-  constructor(centralOffice: CentralOffice, id: string) {
+  constructor(centralOffice: CentralOffice, id: number) {
     this.idNumber = id;
     this.centralOffice = centralOffice;
     this.key = `${centralOffice.id}${id}`;

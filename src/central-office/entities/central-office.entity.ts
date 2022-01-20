@@ -24,25 +24,28 @@ export class CentralOffice {
   @Property()
   yearlyIncome: number;
 
-  @OneToMany(() => Warehouse, (w) => w.centralOffice)
+  @OneToMany(() => Warehouse, (w) => w.centralOffice, { nullable: true })
   warehouses: Collection<Warehouse> = new Collection<Warehouse>(this);
 
-  //todo check typeOfProduct & numberOfProduct fields
-
-  @OneToOne(() => Factory, (f) => f.centralOffice, { owner: true })
+  @OneToOne(() => Factory, (f) => f.centralOffice, {
+    owner: true,
+    nullable: true,
+  })
   factory: Factory;
 
   @OneToOne(() => GeneralManager, (gm) => gm.centralOffice, { owner: true })
   generalManager: GeneralManager;
 
-  @OneToMany(() => CentralOfficePhone, (c) => c.centralOffice)
+  @OneToMany(() => CentralOfficePhone, (c) => c.centralOffice, {
+    nullable: true,
+  })
   phoneNumbers: Collection<CentralOfficePhone> = new Collection<CentralOfficePhone>(
     this,
   );
 
-  @OneToMany(() => Employee, (e) => e.centralOffice)
+  @OneToMany(() => Employee, (e) => e.centralOffice, { nullable: true })
   employees: Collection<Employee> = new Collection<Employee>(this);
 
-  @OneToMany(() => Product, (p) => p.centralOffice)
+  @OneToMany(() => Product, (p) => p.centralOffice, { nullable: true })
   products: Collection<Product> = new Collection<Product>(this);
 }
