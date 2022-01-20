@@ -24,41 +24,20 @@ export class BranchService {
     private readonly orm: MikroORM,
   ) {}
 
-  // @UseRequestContext()
-  // async create(createBranchDto: CreateBranchDto): Promise<Branch> {
-  //   const branch = new Branch();
-  //   branch.city = createBranchDto.city;
-  //   branch.address = createBranchDto.address;
-  //   branch.manager = createBranchDto.manager;
-  //   // branch.centralOffice = new CentralOffice(); //fixme
-  //   branch.monthlyBudget = createBranchDto.monthlyBudget;
-  //   await this.branchRepository.persistAndFlush(branch);
-  //   return branch;
-  // }
   @UseRequestContext()
   create(createBranchDto: CreateBranchDto): Promise<Branch> {
     const c = this.orm.em.getConnection();
     return c.execute(
-        `INSERT INTO branches (city, address, monthly_budget, manager) VALUES ('${createBranchDto.city}', '${createBranchDto.address}', ${createBranchDto.monthlyBudget}, '${createBranchDto.manager}')`,
+      `INSERT INTO branches (city, address, monthly_budget, manager) VALUES ('${createBranchDto.city}', '${createBranchDto.address}', ${createBranchDto.monthlyBudget}, '${createBranchDto.manager}')`,
     );
   }
-
-  // @UseRequestContext()
-  // async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
-  //   const branch = await this.findOne(id);
-  //   branch.city = updateBranchDto.city || branch.city;
-  //   branch.address = updateBranchDto.address || branch.address;
-  //   branch.manager = updateBranchDto.manager || branch.manager;
-  //   branch.monthlyBudget =
-  //     updateBranchDto.monthlyBudget || branch.monthlyBudget;
-  //   await this.branchRepository.persistAndFlush(branch);
-  //   return branch;
-  // }
 
   @UseRequestContext()
   update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
     const c = this.orm.em.getConnection();
-    return c.execute(`UPDATE branches SET city = '${updateBranchDto.city}', address = '${updateBranchDto.address}', monthly_budget = ${updateBranchDto.monthlyBudget}, manager = '${updateBranchDto.manager}'`);
+    return c.execute(
+      `UPDATE branches SET city = '${updateBranchDto.city}', address = '${updateBranchDto.address}', monthly_budget = ${updateBranchDto.monthlyBudget}, manager = '${updateBranchDto.manager}'`,
+    );
   }
 
   @UseRequestContext()
@@ -70,13 +49,13 @@ export class BranchService {
   @UseRequestContext()
   findOne(id: number): Promise<Branch> {
     const c = this.orm.em.getConnection();
-    return c.execute(`SELECT * FROM branches WHERE ID = ${ id }`);
+    return c.execute(`SELECT * FROM branches WHERE ID = ${id}`);
   }
 
   @UseRequestContext()
   remove(id: number): Promise<Branch> {
     const c = this.orm.em.getConnection();
-    return c.execute(`DELETE FROM branches WHERE ID = ${ id }`);
+    return c.execute(`DELETE FROM branches WHERE ID = ${id}`);
   }
 
   @UseRequestContext()
@@ -110,13 +89,13 @@ export class BranchService {
   @UseRequestContext()
   findOnePhone(key: string): Promise<BranchPhone> {
     const c = this.orm.em.getConnection();
-    return c.execute(`SELECT * FROM branche_phones WHERE KEY = '${ key }'`);
+    return c.execute(`SELECT * FROM branche_phones WHERE KEY = '${key}'`);
   }
 
   @UseRequestContext()
   removePhone(key: string): Promise<BranchPhone> {
     const c = this.orm.em.getConnection();
-    return c.execute(`DELETE FROM branche_phones WHERE KEY = ${ key }`);
+    return c.execute(`DELETE FROM branche_phones WHERE KEY = ${key}`);
   }
 
   @UseRequestContext()
@@ -125,7 +104,7 @@ export class BranchService {
     createOrderDto: CreateOrderDto,
   ): Promise<OrderPivot> {
     const branch = await this.findOne(branchId);
-    const warehouse = new Warehouse(); //todo get from warehouseService
+    const warehouse = new Warehouse();
     const order = new OrderPivot(
       warehouse,
       branch,
@@ -146,6 +125,8 @@ export class BranchService {
   @UseRequestContext()
   findOneOrder(key: string): Promise<OrderPivot> {
     const c = this.orm.em.getConnection();
-    return c.execute(`SELECT * FROM branch_warehouse_order_pivot WHERE KEY = '${ key }'`);
+    return c.execute(
+      `SELECT * FROM branch_warehouse_order_pivot WHERE KEY = '${key}'`,
+    );
   }
 }
