@@ -12,7 +12,7 @@ const dbSetups = {
   dbName: 'postgres',
   type: 'postgresql',
   autoLoadEntities: true,
-  debug: false,
+  debug: true,
   migrations: {
     tableName: 'mikro_orm_migrations',
     path: './migrations',
